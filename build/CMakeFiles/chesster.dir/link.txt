@@ -1,0 +1,2 @@
+/Applications/Xcode_14.2.0_14C18_fb.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libchesster.a "CMakeFiles/chesster.dir/chess-engine/Board.cpp.o"
+/Applications/Xcode_14.2.0_14C18_fb.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libchesster.a
