@@ -1,4 +1,0 @@
-/Users/ssiannas/code_proj/chesster/build/CMakeFiles/game.dir
-/Users/ssiannas/code_proj/chesster/build/CMakeFiles/test.dir
-/Users/ssiannas/code_proj/chesster/build/CMakeFiles/edit_cache.dir
-/Users/ssiannas/code_proj/chesster/build/CMakeFiles/rebuild_cache.dir
