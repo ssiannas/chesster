@@ -18,6 +18,7 @@ enum class PieceType : int {
   BLACK_BISHOP,
   WHITE_PAWN,
   BLACK_PAWN,
+  NONE,
 };
 } // namespace chesster
 

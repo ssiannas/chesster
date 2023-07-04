@@ -2,6 +2,7 @@
 #define UTILS_H
 #include "ChessTypes.hpp"
 #include <bit>
+#include <string>
 #include <type_traits>
 
 namespace chesster {
@@ -37,18 +38,26 @@ constexpr BitBoard bbFlipHorizontal(const BitBoard &board) {
          ((board & 0xFF00000000000000ULL) >> 56);
 }
 
-constexpr char32_t pieceUnicodeChars[] = {
-    L'\u2656', L'\u2658', L'\u2657', L'\u2655', L'\u2654', L'\u2659',
-    L'\u2656', L'\u2658', L'\u2657', L'\u2655', L'\u2654', L'\u2659'};
+constexpr wchar_t pieceUnicodeChars[]{L'♔', L'♚', L'♕', L'♛', L'♘', L'♞',
+                                      L'♖', L'♜', L'♗', L'♝', L'♙', L'\u265F'};
 
-constexpr char32_t pieceToUnicode(PieceType piece) {
+constexpr wchar_t pieceToUnicode(PieceType piece) {
   return pieceUnicodeChars[val(piece)];
 }
 
-constexpr char pieceASCII[] = {'K', 'k', 'Q', 'q', 'N', 'n',
-                               'R', 'r', 'B', 'b', 'P', 'p'};
+constexpr char pieceASCII[]{'K', 'k', 'Q', 'q', 'N', 'n',
+                            'R', 'r', 'B', 'b', 'P', 'p'};
 
 constexpr char pieceToAscii(PieceType piece) { return pieceASCII[val(piece)]; }
+
+constexpr std::string_view pieceChars{"KkQqNnRrBbPp"};
+constexpr PieceType getPieceType(char c) {
+  size_t pos = pieceChars.find(c);
+  if (pos != std::string::npos) {
+    return static_cast<PieceType>(pos);
+  }
+  return PieceType::NONE;
+}
 
 } // namespace utils
 } // namespace chesster
