@@ -1,7 +1,14 @@
-if [ ! -d build ]; then
-    mkdir build
+#!/usr/bin/bash
+
+if [[ $1 == "-r" ]]; then
+	echo "Rebuilding"
+	rm -rf build
 fi
 
-cd build
+if [[ ! -d build ]]; then
+	mkdir build
+fi
+
+cd build || exit
 cmake ..
 make
