@@ -1,6 +1,7 @@
 #include <Board.hpp>
 #include <bit>
 #include <gtest/gtest.h>
+#include <ChessTypes.hpp>
 
 using namespace chesster;
 
@@ -22,4 +23,9 @@ TEST_F(BoardTests, positionFromFENTest) {
   BitBoard occupiedBB = b.getOccupancy();
   EXPECT_EQ(occupiedBB, 0xFFFB00041020EFBFULL);
   EXPECT_EQ(std::popcount(occupiedBB), 32);
+}
+
+TEST_F(BoardTests, teamFromFENTest) {
+  b.positionFromFEN(testFEN);
+  EXPECT_EQ(b.getTeamToMove(), Team::BLACK);
 }

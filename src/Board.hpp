@@ -30,6 +30,10 @@ public:
     return _pieceBB[PieceType::WHITE_PAWN + t];
   }
 
+  Team getTeamToMove() {
+    return _teamToMove;
+  }
+
   BitBoard getOccupancy() const { return _occupiedBB; }
   void printBoard() {
     std::cout << "  A B C D E F G H" << std::endl;
