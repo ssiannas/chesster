@@ -22,11 +22,12 @@ private:
   static constexpr BitBoard _emptyBB{0};
   static constexpr BitBoard _fullBB{std::numeric_limits<BitBoard>::max()};
   BitBoard _occupiedBB{0};
+  Team _teamToMove{Team::WHITE};
 
 public:
-  BitBoard getPieceSet(PieceType pt) const { return _pieceBB[utils::val(pt)]; }
+  BitBoard getPieceSetPieceType(PieceType pt) const { return _pieceBB[(pt)]; }
   BitBoard getPawns(Team t) const {
-    return _pieceBB[utils::val(PieceType::WHITE_PAWN) + utils::val(t)];
+    return _pieceBB[PieceType::WHITE_PAWN + t];
   }
 
   BitBoard getOccupancy() const { return _occupiedBB; }
@@ -78,61 +79,63 @@ public:
         PieceType pieceType{utils::getPieceType(c)};
         if (pieceType != PieceType::NONE) {
           int square = rank * 8 + file;
-          _pieceBB[utils::val(pieceType)] |= (1ULL << square);
+          _pieceBB[(pieceType)] |= (1ULL << square);
         }
         file++;
       }
     }
+
+    _teamToMove = utils::parseTeam(sideToMove);
 
     updateBitBoards();
   }
 
 private:
   void initBoard() {
-    _pieceBB[utils::val(PieceType::WHITE_KING)] = W_KING_INIT;
-    _pieceBB[utils::val(PieceType::WHITE_QUEEN)] = W_QUEEN_INIT;
-    _pieceBB[utils::val(PieceType::WHITE_KNIGHT)] = W_KNIGHTS_INIT;
-    _pieceBB[utils::val(PieceType::WHITE_ROOK)] = W_ROOKS_INIT;
-    _pieceBB[utils::val(PieceType::WHITE_BISHOP)] = W_BISHOPS_INIT;
-    _pieceBB[utils::val(PieceType::WHITE_PAWN)] = W_PAWNS_INIT;
+    _pieceBB[PieceType::WHITE_KING] = W_KING_INIT;
+    _pieceBB[PieceType::WHITE_QUEEN] = W_QUEEN_INIT;
+    _pieceBB[PieceType::WHITE_KNIGHT] = W_KNIGHTS_INIT;
+    _pieceBB[PieceType::WHITE_ROOK] = W_ROOKS_INIT;
+    _pieceBB[PieceType::WHITE_BISHOP] = W_BISHOPS_INIT;
+    _pieceBB[PieceType::WHITE_PAWN] = W_PAWNS_INIT;
 
-    _pieceBB[utils::val(PieceType::BLACK_KING)] = B_KING_INIT;
-    _pieceBB[utils::val(PieceType::BLACK_QUEEN)] = B_QUEEN_INIT;
-    _pieceBB[utils::val(PieceType::BLACK_KNIGHT)] = B_KNIGHTS_INIT;
-    _pieceBB[utils::val(PieceType::BLACK_ROOK)] = B_ROOKS_INIT;
-    _pieceBB[utils::val(PieceType::BLACK_BISHOP)] = B_BISHOPS_INIT;
-    _pieceBB[utils::val(PieceType::BLACK_PAWN)] = B_PAWNS_INIT;
+    _pieceBB[PieceType::BLACK_KING] = B_KING_INIT;
+    _pieceBB[PieceType::BLACK_QUEEN] = B_QUEEN_INIT;
+    _pieceBB[PieceType::BLACK_KNIGHT] = B_KNIGHTS_INIT;
+    _pieceBB[PieceType::BLACK_ROOK] = B_ROOKS_INIT;
+    _pieceBB[PieceType::BLACK_BISHOP] = B_BISHOPS_INIT;
+    _pieceBB[PieceType::BLACK_PAWN] = B_PAWNS_INIT;
 
-    _whiteBB = _pieceBB[utils::val(PieceType::WHITE_KING)] |
-               _pieceBB[utils::val(PieceType::WHITE_QUEEN)] |
-               _pieceBB[utils::val(PieceType::WHITE_KNIGHT)] |
-               _pieceBB[utils::val(PieceType::WHITE_ROOK)] |
-               _pieceBB[utils::val(PieceType::WHITE_BISHOP)] |
-               _pieceBB[utils::val(PieceType::WHITE_PAWN)];
+    _whiteBB = _pieceBB[PieceType::WHITE_KING] |
+               _pieceBB[PieceType::WHITE_QUEEN] |
+               _pieceBB[PieceType::WHITE_KNIGHT] |
+               _pieceBB[PieceType::WHITE_ROOK] |
+               _pieceBB[PieceType::WHITE_BISHOP] |
+               _pieceBB[PieceType::WHITE_PAWN];
 
-    _blackBB = _pieceBB[utils::val(PieceType::BLACK_KING)] |
-               _pieceBB[utils::val(PieceType::BLACK_QUEEN)] |
-               _pieceBB[utils::val(PieceType::BLACK_KNIGHT)] |
-               _pieceBB[utils::val(PieceType::BLACK_ROOK)] |
-               _pieceBB[utils::val(PieceType::BLACK_BISHOP)] |
-               _pieceBB[utils::val(PieceType::BLACK_PAWN)];
+    _blackBB = _pieceBB[PieceType::BLACK_KING] |
+               _pieceBB[PieceType::BLACK_QUEEN] |
+               _pieceBB[PieceType::BLACK_KNIGHT] |
+               _pieceBB[PieceType::BLACK_ROOK] |
+               _pieceBB[PieceType::BLACK_BISHOP] |
+               _pieceBB[PieceType::BLACK_PAWN];
     updateBitBoards();
   }
 
   void updateBitBoards() {
-    _whiteBB = _pieceBB[utils::val(PieceType::WHITE_KING)] |
-               _pieceBB[utils::val(PieceType::WHITE_QUEEN)] |
-               _pieceBB[utils::val(PieceType::WHITE_KNIGHT)] |
-               _pieceBB[utils::val(PieceType::WHITE_ROOK)] |
-               _pieceBB[utils::val(PieceType::WHITE_BISHOP)] |
-               _pieceBB[utils::val(PieceType::WHITE_PAWN)];
+    _whiteBB = _pieceBB[PieceType::WHITE_KING] |
+               _pieceBB[PieceType::WHITE_QUEEN] |
+               _pieceBB[PieceType::WHITE_KNIGHT] |
+               _pieceBB[PieceType::WHITE_ROOK] |
+               _pieceBB[PieceType::WHITE_BISHOP] |
+               _pieceBB[PieceType::WHITE_PAWN];
 
-    _blackBB = _pieceBB[utils::val(PieceType::BLACK_KING)] |
-               _pieceBB[utils::val(PieceType::BLACK_QUEEN)] |
-               _pieceBB[utils::val(PieceType::BLACK_KNIGHT)] |
-               _pieceBB[utils::val(PieceType::BLACK_ROOK)] |
-               _pieceBB[utils::val(PieceType::BLACK_BISHOP)] |
-               _pieceBB[utils::val(PieceType::BLACK_PAWN)];
+    _blackBB = _pieceBB[PieceType::BLACK_KING] |
+               _pieceBB[PieceType::BLACK_QUEEN] |
+               _pieceBB[PieceType::BLACK_KNIGHT] |
+               _pieceBB[PieceType::BLACK_ROOK] |
+               _pieceBB[PieceType::BLACK_BISHOP] |
+               _pieceBB[PieceType::BLACK_PAWN];
 
     _occupiedBB = _whiteBB | _blackBB;
   }

@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/bin/bash
 
 if [[ $1 == "-r" ]]; then
 	echo "Rebuilding"

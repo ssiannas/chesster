@@ -59,6 +59,11 @@ constexpr PieceType getPieceType(char c) {
   return PieceType::NONE;
 }
 
+Team parseTeam(std::string team){
+  if (team == "w") return Team::WHITE;
+  if (team == "b") return Team::BLACK;
+  return Team::WHITE;
+}
 } // namespace utils
 } // namespace chesster
 

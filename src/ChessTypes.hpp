@@ -3,9 +3,9 @@
 
 namespace chesster {
 typedef unsigned long long BitBoard;
-enum class Team : int { WHITE, BLACK };
+enum Team { WHITE, BLACK };
 
-enum class PieceType : int {
+enum PieceType {
   WHITE_KING,
   BLACK_KING,
   WHITE_QUEEN,
