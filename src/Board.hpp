@@ -53,6 +53,7 @@ public:
   }
 
   // Set up the piece bitboards to the given position
+  // TODO: std::expected<void, errtype>
   void positionFromFEN(const std::string &fen) {
     std::istringstream iss(fen);
     std::string boardString, sideToMove, castlingRights, enPassantSquare,
@@ -61,7 +62,6 @@ public:
           enPassantSquare >> halfMoveClock >> fullMoveNumber)) {
       return;
     }
-    std::cout << boardString << std::endl;
 
     for (auto &piece : _pieceBB) {
       piece = 0;
