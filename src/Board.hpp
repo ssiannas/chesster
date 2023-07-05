@@ -20,7 +20,8 @@ private:
   BitBoard _whiteBB{0};
   BitBoard _blackBB{0};
   static constexpr BitBoard _emptyBB{0};
-  BitBoard _occupiedBB{std::numeric_limits<BitBoard>::max()};
+  static constexpr BitBoard _fullBB{std::numeric_limits<BitBoard>::max()};
+  BitBoard _occupiedBB{0};
 
 public:
   BitBoard getPieceSet(PieceType pt) const { return _pieceBB[utils::val(pt)]; }
@@ -115,6 +116,7 @@ private:
                _pieceBB[utils::val(PieceType::BLACK_ROOK)] |
                _pieceBB[utils::val(PieceType::BLACK_BISHOP)] |
                _pieceBB[utils::val(PieceType::BLACK_PAWN)];
+    updateBitBoards();
   }
 
   void updateBitBoards() {
