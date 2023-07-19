@@ -19,7 +19,7 @@ TEST_F(BoardTests, initTest) {
 
 TEST_F(BoardTests, positionFromFENTest) {
   b.positionFromFEN(testFEN);
-  b.printBoard();
+  std::cout << b;
   BitBoard occupiedBB = b.getOccupancy();
   EXPECT_EQ(occupiedBB, 0xFFFB00041020EFBFULL);
   EXPECT_EQ(std::popcount(occupiedBB), 32);

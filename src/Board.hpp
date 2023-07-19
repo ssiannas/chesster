@@ -11,10 +11,7 @@
 namespace chesster {
 
 class Board {
-public:
-  Board() { initBoard(); }
 
-public:
 private:
   BitBoard _pieceBB[12];
   BitBoard _whiteBB{0};
@@ -25,6 +22,7 @@ private:
   Team _teamToMove{Team::WHITE};
 
 public:
+  Board() { initBoard(); }
   BitBoard getPieceSetPieceType(PieceType pt) const { return _pieceBB[(pt)]; }
   BitBoard getPawns(Team t) const {
     return _pieceBB[PieceType::WHITE_PAWN + t];
@@ -35,10 +33,10 @@ public:
   }
 
   BitBoard getOccupancy() const { return _occupiedBB; }
-  void printBoard() {
-    std::cout << "  A B C D E F G H" << std::endl;
+  void streamBoard(std::ostream &os) const {
+    os << "  A B C D E F G H\n";
     for (int i = 7; i >= 0; --i) {
-      std::cout << 8 - i << " ";
+      os << 8 - i << " ";
       for (int j = 0; j < 8; ++j) {
         BitBoard bb = 1ULL << (i * 8 + j);
         bool empty = true;
@@ -46,15 +44,19 @@ public:
           if (_pieceBB[k] & bb) {
             empty = false;
             char pieceASCII{utils::pieceToAscii(static_cast<PieceType>(k))};
-            std::cout << pieceASCII << " ";
+            os << pieceASCII << " ";
             break;
           }
         }
         if (empty)
-          std::cout << "- ";
+          os << "- ";
       }
-      std::cout << std::endl;
+      os << '\n';
     }
+  }
+
+  void printBoard() const {
+    streamBoard(std::cout);
   }
 
   // Set up the piece bitboards to the given position
@@ -92,6 +94,10 @@ public:
     _teamToMove = utils::parseTeam(sideToMove);
 
     updateBitBoards();
+  }
+
+  friend void operator<<(std::ostream &os, const Board &board) {
+    board.streamBoard(os);
   }
 
 private:
