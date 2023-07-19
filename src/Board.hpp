@@ -71,29 +71,6 @@ public:
     updateBitBoards();
   }
 
-  // Stream out the board in human readable format
-  void streamBoard(std::ostream &os) const {
-    os << "  A B C D E F G H\n";
-    for (int i = 7; i >= 0; --i) {
-      os << 8 - i << " ";
-      for (int j = 0; j < 8; ++j) {
-        BitBoard bb = 1ULL << (i * 8 + j);
-        bool empty = true;
-        for (int k = 0; k < 12; ++k) {
-          if (_pieceBB[k] & bb) {
-            empty = false;
-            char pieceASCII{utils::pieceToAscii(static_cast<PieceType>(k))};
-            os << pieceASCII << " ";
-            break;
-          }
-        }
-        if (empty)
-          os << "- ";
-      }
-      os << '\n';
-    }
-  }
-
   void printBoard() const {
     streamBoard(std::cout);
   }
@@ -151,7 +128,29 @@ private:
 
     _occupiedBB = _whiteBB | _blackBB;
   }
-};
 
+  // Stream out the board in human readable format
+  void streamBoard(std::ostream &os) const {
+    os << "  A B C D E F G H\n";
+    for (int i = 7; i >= 0; --i) {
+      os << 8 - i << " ";
+      for (int j = 0; j < 8; ++j) {
+        BitBoard bb = 1ULL << (i * 8 + j);
+        bool empty = true;
+        for (int k = 0; k < 12; ++k) {
+          if (_pieceBB[k] & bb) {
+            empty = false;
+            char pieceASCII{utils::pieceToAscii(static_cast<PieceType>(k))};
+            os << pieceASCII << " ";
+            break;
+          }
+        }
+        if (empty)
+          os << "- ";
+      }
+      os << '\n';
+    }
+  }
+};
 } // namespace chesster
 #endif // BOARD_H
