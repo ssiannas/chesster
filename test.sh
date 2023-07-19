@@ -1,5 +1,5 @@
 #!/bin/bash
-./build.sh
+./build.sh $1
 
 cd build || exit
-ctest --verbose --output-on-failure
+ctest --output-on-failure

@@ -23,7 +23,7 @@ private:
 
 public:
   Board() { initBoard(); }
-  BitBoard getPieceSetPieceType(PieceType pt) const { return _pieceBB[(pt)]; }
+  BitBoard getPieceSetPieceType(PieceType pt) const { return _pieceBB[pt]; }
   BitBoard getPawns(Team t) const {
     return _pieceBB[PieceType::WHITE_PAWN + t];
   }
@@ -33,31 +33,6 @@ public:
   }
 
   BitBoard getOccupancy() const { return _occupiedBB; }
-  void streamBoard(std::ostream &os) const {
-    os << "  A B C D E F G H\n";
-    for (int i = 7; i >= 0; --i) {
-      os << 8 - i << " ";
-      for (int j = 0; j < 8; ++j) {
-        BitBoard bb = 1ULL << (i * 8 + j);
-        bool empty = true;
-        for (int k = 0; k < 12; ++k) {
-          if (_pieceBB[k] & bb) {
-            empty = false;
-            char pieceASCII{utils::pieceToAscii(static_cast<PieceType>(k))};
-            os << pieceASCII << " ";
-            break;
-          }
-        }
-        if (empty)
-          os << "- ";
-      }
-      os << '\n';
-    }
-  }
-
-  void printBoard() const {
-    streamBoard(std::cout);
-  }
 
   // Set up the piece bitboards to the given position
   // TODO: std::expected<void, errtype>
@@ -94,6 +69,33 @@ public:
     _teamToMove = utils::parseTeam(sideToMove);
 
     updateBitBoards();
+  }
+
+  // Stream out the board in human readable format
+  void streamBoard(std::ostream &os) const {
+    os << "  A B C D E F G H\n";
+    for (int i = 7; i >= 0; --i) {
+      os << 8 - i << " ";
+      for (int j = 0; j < 8; ++j) {
+        BitBoard bb = 1ULL << (i * 8 + j);
+        bool empty = true;
+        for (int k = 0; k < 12; ++k) {
+          if (_pieceBB[k] & bb) {
+            empty = false;
+            char pieceASCII{utils::pieceToAscii(static_cast<PieceType>(k))};
+            os << pieceASCII << " ";
+            break;
+          }
+        }
+        if (empty)
+          os << "- ";
+      }
+      os << '\n';
+    }
+  }
+
+  void printBoard() const {
+    streamBoard(std::cout);
   }
 
   friend void operator<<(std::ostream &os, const Board &board) {
