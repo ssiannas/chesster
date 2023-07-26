@@ -1,12 +1,14 @@
+#!/usr/bin/python3
+
 teststr ="""  A B C D E F G H
-1 r n b q k b n r 
-2 p p - p p p p p 
-3 - - - - - - - - 
-4 - - p - - - - - 
-5 - - - - P - - - 
-6 - - - - - N - - 
-7 P P P P - P P P 
-8 R N B Q K B - R 
+8 r n b q k b n r 
+7 p p - p p p p p 
+6 - - - - - - - - 
+5 - - p - - - - - 
+4 - - - - P - - - 
+3 - - - - - N - - 
+2 P P P P - P P P 
+1 R N B Q K B - R 
 """
 
 def parse_str(board_str):
