@@ -18,19 +18,22 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 add_executable(mask_test masks_test.cpp)
 add_executable(board_test board_test.cpp)
 add_executable(utils_test utils_test.cpp)
+add_executable(moves_test moves_test.cpp)
 target_link_libraries(board_test 
     PRIVATE
     GTest::GTest)
-
 target_link_libraries(mask_test 
     PRIVATE
     GTest::GTest)
-
 target_link_libraries(utils_test 
+    PRIVATE
+    GTest::GTest)
+target_link_libraries(moves_test 
     PRIVATE
     GTest::GTest)
 # gtest_discover_tests(board_test)
 add_test(board_tests board_test)
 add_test(mask_tests mask_test)
 add_test(utils_tests utils_test)
+add_test(moves_test moves_test)
 

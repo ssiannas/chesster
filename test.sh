@@ -2,4 +2,4 @@
 ./build.sh
 
 cd build || exit
-ctest --verbose --output-on-failure
+ctest --output-on-failure

@@ -20,6 +20,18 @@ enum class Squares : Square {
 };
 // clang-format on
 
+constexpr bool operator==(const Squares &lhs, const Squares &rhs) {
+  return static_cast<Square>(lhs) == static_cast<Square>(rhs);
+}
+
+constexpr bool operator==(const Square &lhs, const Squares &rhs) {
+  return lhs == static_cast<Square>(rhs);
+}
+
+constexpr bool operator==(const Squares &lhs, const Square &rhs) {
+  return static_cast<Square>(lhs) == rhs;
+}
+
 enum Team { WHITE, BLACK };
 
 enum PieceType {
