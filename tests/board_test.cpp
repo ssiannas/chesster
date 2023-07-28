@@ -1,5 +1,6 @@
 #include <Board.hpp>
 #include <ChessTypes.hpp>
+#include <Move.hpp>
 #include <bit>
 #include <gtest/gtest.h>
 
@@ -33,4 +34,19 @@ TEST_F(BoardTests, teamFromFENTest) {
 
 TEST_F(BoardTests, failingFENTest) {
   EXPECT_THROW(b.positionFromFEN(brokenFEN), std::runtime_error);
+}
+
+TEST_F(BoardTests, movePieceTest) {
+  Move m{Squares::E2, Squares::E4, MoveFlags::DOUBLE_PAWN_PUSH};
+  b.performMove(m, PieceType::WHITE_PAWN);
+  BitBoard occupiedBB = b.getOccupancy();
+  // 1 1 1 1 1 1 1 1
+  // 1 1 1 1 1 1 1 1
+  // 0 0 0 0 0 0 0 0
+  // 0 0 0 0 0 0 0 0
+  // 0 0 0 0 1 0 0 0
+  // 0 0 0 0 0 0 0 0
+  // 1 1 1 1 0 1 1 1
+  // 1 1 1 1 1 1 1 1
+  EXPECT_EQ(occupiedBB, 0xFFFF00000800F7FFULL);
 }

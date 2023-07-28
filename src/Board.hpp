@@ -2,6 +2,7 @@
 #define BOARD_H
 #include "ChessTypes.hpp"
 #include "Masks.hpp"
+#include "Move.hpp"
 #include "Utils.hpp"
 #include <cmath>
 #include <iostream>
@@ -97,6 +98,13 @@ public:
 
   friend void operator<<(std::ostream &os, const Board &board) noexcept {
     board.streamBoard(os);
+  }
+
+  // TODO: Rethink this
+  void performMove(Move m, PieceType t) noexcept {
+    _pieceBB[t] ^= (1ULL << m.from());
+    _pieceBB[t] |= (1ULL << m.to());
+    updateBitBoards();
   }
 
 private:
