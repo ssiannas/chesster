@@ -58,7 +58,6 @@ public:
   void printBoard() const noexcept { streamBoard(std::cout); }
 
   // Set up the piece bitboards to the given position
-  // TODO: std::expected<void, errtype>
   void positionFromFEN(const std::string &fen) {
     std::istringstream iss(fen);
     std::string boardString, sideToMove, castlingRights, enPassantSquare,
