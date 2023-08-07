@@ -2,6 +2,7 @@
 #define BOARD_H
 #include "ChessTypes.hpp"
 #include "Masks.hpp"
+#include "Move.hpp"
 #include "Utils.hpp"
 #include <cmath>
 #include <iostream>
@@ -9,7 +10,6 @@
 #include <sstream>
 
 namespace chesster {
-
 class Board {
 
 private:
@@ -23,26 +23,48 @@ private:
 
 public:
   Board() { initBoard(); }
-  BitBoard getPieceSetPieceType(PieceType pt) const { return _pieceBB[pt]; }
-  BitBoard getPawns(Team t) const {
-    return _pieceBB[PieceType::WHITE_PAWN + t];
+  BitBoard getPieceSetPieceType(PieceType pt) const noexcept {
+    return _pieceBB[(pt)];
+  }
+  BitBoard getPawns(Team t) const noexcept {
+    return _pieceBB[PieceType::WHITE_PAWN + utils::val(t)];
   }
 
-  Team getTeamToMove() {
-    return _teamToMove;
+  Team getTeamToMove() noexcept { return _teamToMove; }
+
+  BitBoard getOccupancy() const noexcept { return _occupiedBB; }
+  void streamBoard(std::ostream &os) const noexcept {
+    os << "  A B C D E F G H\n";
+    for (int i = 7; i >= 0; --i) {
+      os << i + 1 << " ";
+      for (int j = 0; j < 8; ++j) {
+        BitBoard bb = 1ULL << (i * 8 + j);
+        bool empty = true;
+        for (int k = 0; k < 12; ++k) {
+          if (_pieceBB[k] & bb) {
+            empty = false;
+            char pieceASCII{utils::pieceToAscii(static_cast<PieceType>(k))};
+            os << pieceASCII << " ";
+            break;
+          }
+        }
+        if (empty)
+          os << "- ";
+      }
+      os << '\n';
+    }
   }
 
-  BitBoard getOccupancy() const { return _occupiedBB; }
+  void printBoard() const noexcept { streamBoard(std::cout); }
 
   // Set up the piece bitboards to the given position
-  // TODO: std::expected<void, errtype>
   void positionFromFEN(const std::string &fen) {
     std::istringstream iss(fen);
     std::string boardString, sideToMove, castlingRights, enPassantSquare,
         halfMoveClock, fullMoveNumber;
     if (!(iss >> boardString >> sideToMove >> castlingRights >>
           enPassantSquare >> halfMoveClock >> fullMoveNumber)) {
-      return;
+      throw std::runtime_error("Invalid FEN");
     }
 
     for (auto &piece : _pieceBB) {
@@ -61,6 +83,8 @@ public:
         if (pieceType != PieceType::NONE) {
           int square = rank * 8 + file;
           _pieceBB[(pieceType)] |= (1ULL << square);
+        } else {
+          throw std::runtime_error("Invalid FEN");
         }
         file++;
       }
@@ -71,16 +95,19 @@ public:
     updateBitBoards();
   }
 
-  void printBoard() const {
-    streamBoard(std::cout);
-  }
-
-  friend void operator<<(std::ostream &os, const Board &board) {
+  friend void operator<<(std::ostream &os, const Board &board) noexcept {
     board.streamBoard(os);
   }
 
+  // TODO: Rethink this
+  void performMove(Move m, PieceType t) noexcept {
+    _pieceBB[t] ^= (1ULL << m.from());
+    _pieceBB[t] |= (1ULL << m.to());
+    updateBitBoards();
+  }
+
 private:
-  void initBoard() {
+  void initBoard() noexcept {
     _pieceBB[PieceType::WHITE_KING] = W_KING_INIT;
     _pieceBB[PieceType::WHITE_QUEEN] = W_QUEEN_INIT;
     _pieceBB[PieceType::WHITE_KNIGHT] = W_KNIGHTS_INIT;
@@ -95,36 +122,28 @@ private:
     _pieceBB[PieceType::BLACK_BISHOP] = B_BISHOPS_INIT;
     _pieceBB[PieceType::BLACK_PAWN] = B_PAWNS_INIT;
 
-    _whiteBB = _pieceBB[PieceType::WHITE_KING] |
-               _pieceBB[PieceType::WHITE_QUEEN] |
-               _pieceBB[PieceType::WHITE_KNIGHT] |
-               _pieceBB[PieceType::WHITE_ROOK] |
-               _pieceBB[PieceType::WHITE_BISHOP] |
-               _pieceBB[PieceType::WHITE_PAWN];
+    _whiteBB =
+        _pieceBB[PieceType::WHITE_KING] | _pieceBB[PieceType::WHITE_QUEEN] |
+        _pieceBB[PieceType::WHITE_KNIGHT] | _pieceBB[PieceType::WHITE_ROOK] |
+        _pieceBB[PieceType::WHITE_BISHOP] | _pieceBB[PieceType::WHITE_PAWN];
 
-    _blackBB = _pieceBB[PieceType::BLACK_KING] |
-               _pieceBB[PieceType::BLACK_QUEEN] |
-               _pieceBB[PieceType::BLACK_KNIGHT] |
-               _pieceBB[PieceType::BLACK_ROOK] |
-               _pieceBB[PieceType::BLACK_BISHOP] |
-               _pieceBB[PieceType::BLACK_PAWN];
+    _blackBB =
+        _pieceBB[PieceType::BLACK_KING] | _pieceBB[PieceType::BLACK_QUEEN] |
+        _pieceBB[PieceType::BLACK_KNIGHT] | _pieceBB[PieceType::BLACK_ROOK] |
+        _pieceBB[PieceType::BLACK_BISHOP] | _pieceBB[PieceType::BLACK_PAWN];
     updateBitBoards();
   }
 
-  void updateBitBoards() {
-    _whiteBB = _pieceBB[PieceType::WHITE_KING] |
-               _pieceBB[PieceType::WHITE_QUEEN] |
-               _pieceBB[PieceType::WHITE_KNIGHT] |
-               _pieceBB[PieceType::WHITE_ROOK] |
-               _pieceBB[PieceType::WHITE_BISHOP] |
-               _pieceBB[PieceType::WHITE_PAWN];
+  void updateBitBoards() noexcept {
+    _whiteBB =
+        _pieceBB[PieceType::WHITE_KING] | _pieceBB[PieceType::WHITE_QUEEN] |
+        _pieceBB[PieceType::WHITE_KNIGHT] | _pieceBB[PieceType::WHITE_ROOK] |
+        _pieceBB[PieceType::WHITE_BISHOP] | _pieceBB[PieceType::WHITE_PAWN];
 
-    _blackBB = _pieceBB[PieceType::BLACK_KING] |
-               _pieceBB[PieceType::BLACK_QUEEN] |
-               _pieceBB[PieceType::BLACK_KNIGHT] |
-               _pieceBB[PieceType::BLACK_ROOK] |
-               _pieceBB[PieceType::BLACK_BISHOP] |
-               _pieceBB[PieceType::BLACK_PAWN];
+    _blackBB =
+        _pieceBB[PieceType::BLACK_KING] | _pieceBB[PieceType::BLACK_QUEEN] |
+        _pieceBB[PieceType::BLACK_KNIGHT] | _pieceBB[PieceType::BLACK_ROOK] |
+        _pieceBB[PieceType::BLACK_BISHOP] | _pieceBB[PieceType::BLACK_PAWN];
 
     _occupiedBB = _whiteBB | _blackBB;
   }

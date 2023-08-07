@@ -51,6 +51,7 @@ constexpr char pieceASCII[]{'K', 'k', 'Q', 'q', 'N', 'n',
 constexpr char pieceToAscii(PieceType piece) { return pieceASCII[val(piece)]; }
 
 constexpr std::string_view pieceChars{"KkQqNnRrBbPp"};
+
 constexpr PieceType getPieceType(char c) {
   size_t pos = pieceChars.find(c);
   if (pos != std::string::npos) {
@@ -59,10 +60,24 @@ constexpr PieceType getPieceType(char c) {
   return PieceType::NONE;
 }
 
-Team parseTeam(std::string team){
-  if (team == "w") return Team::WHITE;
-  if (team == "b") return Team::BLACK;
+inline Team parseTeam(std::string team) {
+  if (team == "w")
+    return Team::WHITE;
+  if (team == "b")
+    return Team::BLACK;
   return Team::WHITE;
+}
+
+constexpr BitBoard popLSB(BitBoard &board) {
+  BitBoard lsb = board & -board;
+  board &= board - 1;
+  return lsb;
+}
+
+constexpr BitBoard getLSB(const BitBoard board) { return board & -board; }
+
+constexpr Square getLSBSquare(const BitBoard board) {
+  return static_cast<Square>(std::countr_zero(board));
 }
 } // namespace utils
 } // namespace chesster
