@@ -33,27 +33,6 @@ public:
   Team getTeamToMove() noexcept { return _teamToMove; }
 
   BitBoard getOccupancy() const noexcept { return _occupiedBB; }
-  void streamBoard(std::ostream &os) const noexcept {
-    os << "  A B C D E F G H\n";
-    for (int i = 7; i >= 0; --i) {
-      os << i + 1 << " ";
-      for (int j = 0; j < 8; ++j) {
-        BitBoard bb = 1ULL << (i * 8 + j);
-        bool empty = true;
-        for (int k = 0; k < 12; ++k) {
-          if (_pieceBB[k] & bb) {
-            empty = false;
-            char pieceASCII{utils::pieceToAscii(static_cast<PieceType>(k))};
-            os << pieceASCII << " ";
-            break;
-          }
-        }
-        if (empty)
-          os << "- ";
-      }
-      os << '\n';
-    }
-  }
 
   void printBoard() const noexcept { streamBoard(std::cout); }
 
@@ -146,6 +125,28 @@ private:
         _pieceBB[PieceType::BLACK_BISHOP] | _pieceBB[PieceType::BLACK_PAWN];
 
     _occupiedBB = _whiteBB | _blackBB;
+  }
+
+  void streamBoard(std::ostream &os) const noexcept {
+    os << "  A B C D E F G H\n";
+    for (int i = 7; i >= 0; --i) {
+      os << i + 1 << " ";
+      for (int j = 0; j < 8; ++j) {
+        BitBoard bb = 1ULL << (i * 8 + j);
+        bool empty = true;
+        for (int k = 0; k < 12; ++k) {
+          if (_pieceBB[k] & bb) {
+            empty = false;
+            char pieceASCII{utils::pieceToAscii(static_cast<PieceType>(k))};
+            os << pieceASCII << " ";
+            break;
+          }
+        }
+        if (empty)
+          os << "- ";
+      }
+      os << '\n';
+    }
   }
 };
 } // namespace chesster
